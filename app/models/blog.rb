@@ -1,6 +1,7 @@
 class Blog < ApplicationRecord
   belongs_to :category
 
-  validates :title,:author, presence: true, length: {minimum:3}
-  validates :content, presence: true
+  validates :title, presence: true, length: {minimum:3}
+  validates :author, presence: true, length: {minimum:2}
+  validates :content, presence: true 
 end
