@@ -1,14 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe "Blogs", type: :request do
-  let!(:blogs) {create_list(:blog, 10)}
-  let!(:blog_id) {blogs.first.id}
-
+  let!(:blogs) {create_list(:blog, 10) }
+  let(:blog_id) {blogs.first.id}
+  let(:user) { FactoryBot.create(:user, name: 'Larry Jay', username: 'Larry1', email: 'testLarry1@mailer.com', password: 'password')}
   #TEST to Get blogs
   describe "GET /blogs" do
-    before {get '/api/v1/blogs'}
+    
+    before { get '/api/v1/blogs',  headers: { 'Authorization' => AuthenticationTokenService.call(user.id) }}
 
     it 'returns status code 200' do 
+      puts "#{response.status}"
       expect(response).to have_http_status(200)
     end 
 
@@ -20,7 +22,9 @@ RSpec.describe "Blogs", type: :request do
 
   #Test Get a Blog 
   describe "GET /blogs/:id" do
-    before {get "/api/v1/blogs/#{blog_id}"}
+    before {get "/api/v1/blogs/#{blog_id}", headers: {
+      'Authorization' => AuthenticationTokenService.call(user.id)
+    }}
     
     context "when the blog exists" do 
       it 'returns status code 200' do 
@@ -36,7 +40,9 @@ RSpec.describe "Blogs", type: :request do
     context 'when the blog does not exist' do 
       let(:newblog_id) { 0 }
 
-      before {get "/api/v1/blogs/#{newblog_id}"}
+      before {get "/api/v1/blogs/#{newblog_id}", headers: {
+        'Authorization' => AuthenticationTokenService.call(user.id)
+      }}
 
       it 'returns status code 404' do 
         expect(response).to have_http_status(404)
@@ -50,18 +56,21 @@ RSpec.describe "Blogs", type: :request do
 
   #Test to CREATE Blog
   describe 'POST /blog' do 
-    let(:category) {FactoryBot.create(:category)}
+    let!(:category) {FactoryBot.create(:category)}
+    # let(:user) {FactoryBot.create(:user)}
     let(:blog_params) {
       {
         title: 'Liverpool win the quadruple', 
         content: 'Liverpool FC have today set a new record by winning a record 4 trophies in a season',
         author: 'Larry Jay', 
-        category_id: category.id
+        category_id: category.id, 
       }
     }
     
     context 'when the param attributes are valid' do 
-      before {post '/api/v1/blogs', params: blog_params}
+      before {post '/api/v1/blogs', params: blog_params, headers: {
+        'Authorization' => AuthenticationTokenService.call(user.id)
+      }}
 
       it 'returns status code 201' do 
         expect(response).to have_http_status(201)
@@ -76,7 +85,9 @@ RSpec.describe "Blogs", type: :request do
 
     context 'when the param attributes are invalid' do 
 
-      before {post '/api/v1/blogs', params: {}}
+      before {post '/api/v1/blogs', params: {}, headers: {
+        'Authorization' => AuthenticationTokenService.call(user.id)
+      }}
 
       it 'returns status code 422' do 
         expect(response).to have_http_status(422)
@@ -92,7 +103,9 @@ RSpec.describe "Blogs", type: :request do
   describe 'PUT /blogs/:id' do
     let(:valid_attributes) { { title: 'Anfield Erupts' } }
 
-    before { put "/api/v1/blogs/#{blog_id}", params: valid_attributes }
+    before { put "/api/v1/blogs/#{blog_id}", params: valid_attributes, headers: {
+      'Authorization' => AuthenticationTokenService.call(user.id)
+    }}
 
     context 'when blog exists' do
       it 'returns status code 204' do
@@ -120,7 +133,9 @@ RSpec.describe "Blogs", type: :request do
 
   #Test DELETE Blog
   describe 'DELETE /blog/:id' do 
-    before {delete "/api/v1/blogs/#{blog_id}"}
+    before {delete "/api/v1/blogs/#{blog_id}", headers: {
+      'Authorization' => AuthenticationTokenService.call(user.id)
+    }}
 
     it 'returns status code 204' do 
       expect(response).to have_http_status(204)

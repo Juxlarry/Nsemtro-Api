@@ -1,4 +1,5 @@
 class Api::V1::BlogsController < ApplicationController
+    before_action :authenticate_request!
     before_action :set_blog, only: %i[show update destroy]
 
     #Get /Blogs
@@ -9,7 +10,7 @@ class Api::V1::BlogsController < ApplicationController
 
     #POST /blog
     def create 
-        @blog = Blog.create(blog_params)
+        @blog = current_user!.blogs.create(blog_params)
 
         if @blog.save 
             render json: BlogRepresenter.new(@blog).as_json, status: :created
@@ -45,7 +46,7 @@ class Api::V1::BlogsController < ApplicationController
     private 
 
     def blog_params 
-        params.permit(:title,:content,:author,:category_id)
+        params.permit(:title,:content,:author,:category_id, :user_id)
     end 
 
     def set_blog
