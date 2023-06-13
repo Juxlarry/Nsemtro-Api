@@ -7,6 +7,8 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :categories, only: %i[index create show destroy]
       resources :blogs, only: %i[index create show update destroy]
+      post 'login', to: 'authentication#create'
+      post 'signup', to: 'users#create'
     end 
   end  
 end
