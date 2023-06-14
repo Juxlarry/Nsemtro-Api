@@ -29,9 +29,9 @@ class Api::V1::BlogsController < ApplicationController
 
     #PUT /blog/:id
     def update 
-        # logger.info "blog before update - #{@blog}"
+        logger.info "blog before update - #{@blog.inspect}"
         if @blog.update(blog_params)
-            # logger.info "blog after update - #{@blog}"
+            logger.info "blog after update - #{@blog.inspect}"
             head :no_content
         else  
             render json: @blog.errors, status: :unprocessable_entity
@@ -51,8 +51,9 @@ class Api::V1::BlogsController < ApplicationController
     def blog_params 
         if current_user
             params[:author] = current_user.username
+            params[:user_id] = current_user.id
         end
-        params.permit(:title, :content, :author, :category_id)
+        params.permit(:title, :content, :author, :category_id, :user_id)
     end 
 
     def set_blog

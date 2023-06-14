@@ -6,9 +6,10 @@ class Blog < ApplicationRecord
   validates :author, presence: true, length: {minimum:2}
   validates :content, presence: true 
 
-  # private 
+  private 
 
   # def add_author
+  #   logger.info "In the before save method"
   #   if current_user
   #     self.author = current_user.username
   #   end
