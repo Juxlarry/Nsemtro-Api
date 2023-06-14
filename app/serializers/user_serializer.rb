@@ -5,4 +5,10 @@ class UserSerializer
   attribute :created_date do |user| 
     user.created_at && user.created_at.strftime('%I:%M %p | %m/%d/%Y')
   end 
+
+  attribute :avatar_blob do |user| 
+    if user.avatar.attached? 
+      url_for(user.avatar)
+    end 
+  end 
 end

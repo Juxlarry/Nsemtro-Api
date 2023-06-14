@@ -10,14 +10,19 @@ class Api::V1::BlogsController < ApplicationController
 
     #POST /blog
     def create 
-        @blog = Blog.create(blog_params)
-
+        @blog = Blog.new(blog_params)
+        
+        logger.info "Blog - #{@blog.inspect}"
+        logger.info "Blog params - #{blog_params}"
+        
+        @blog.blog_images.attach(params[:blog_images])
+        
         if @blog.save 
-            # blog = blog.update(:author => current_user.username )
             render json: BlogRepresenter.new(@blog).as_json, status: :created
         else
             render json: @blog.errors, status: :unprocessable_entity
         end
+
     end 
 
 
@@ -53,7 +58,7 @@ class Api::V1::BlogsController < ApplicationController
             params[:author] = current_user.username
             params[:user_id] = current_user.id
         end
-        params.permit(:title, :content, :author, :category_id, :user_id)
+        params.permit(:title, :content, :author, :category_id, :user_id, blog_images:[])
     end 
 
     def set_blog
