@@ -1,4 +1,5 @@
 class Api::V1::BlogsController < ApplicationController
+    before_action :authenticate_user!
     before_action :set_blog, only: %i[show update destroy]
 
     #Get /Blogs
