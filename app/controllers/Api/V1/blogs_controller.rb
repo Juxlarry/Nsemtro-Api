@@ -13,6 +13,7 @@ class Api::V1::BlogsController < ApplicationController
         @blog = Blog.create(blog_params)
 
         if @blog.save 
+            # blog = blog.update(:author => current_user.username )
             render json: BlogRepresenter.new(@blog).as_json, status: :created
         else
             render json: @blog.errors, status: :unprocessable_entity
@@ -28,7 +29,9 @@ class Api::V1::BlogsController < ApplicationController
 
     #PUT /blog/:id
     def update 
+        # logger.info "blog before update - #{@blog}"
         if @blog.update(blog_params)
+            # logger.info "blog after update - #{@blog}"
             head :no_content
         else  
             render json: @blog.errors, status: :unprocessable_entity
@@ -46,7 +49,10 @@ class Api::V1::BlogsController < ApplicationController
     private 
 
     def blog_params 
-        params.permit(:title,:content,:author,:category_id)
+        if current_user
+            params[:author] = current_user.username
+        end
+        params.permit(:title, :content, :author, :category_id)
     end 
 
     def set_blog

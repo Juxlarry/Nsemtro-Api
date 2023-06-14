@@ -10,8 +10,12 @@ class BlogRepresenter
             content: blog.content,
             author: blog.author, 
             category: Category.find(blog.id).name, 
-            posted_on: blog.created_at
+            posted_on: created_date
         }
+    end 
+
+    def created_date
+        blog.created_at.strftime('%I:%M %p, %m/%d/%Y')
     end 
 
     private 
