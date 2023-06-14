@@ -32,3 +32,6 @@
 /log/.keep 
 /log/
 /tmp
+
+#ignore .env file
+.env 
