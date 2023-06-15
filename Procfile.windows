@@ -1,0 +1,1 @@
+web: nsemtro-api -S bin\puma -C config\puma.rb
