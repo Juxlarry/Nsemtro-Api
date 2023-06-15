@@ -21,3 +21,6 @@ API Features
 - Blog image(s) upload
 - A serializer for JSON responses 
 - Test Coverage using RSpec 
+
+Test Coverage
+- With the help of Simple Cov Gem, this API test coverage is 98.67%
