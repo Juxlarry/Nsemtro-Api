@@ -20,7 +20,7 @@ RSpec.describe "Authentications", type: :request do
         context 'when user attributes are invalid' do 
 
             it 'returns error when username does not exist' do
-                post '/login', params: {
+                post '/api/v1/login', params: {
                     user: {
                         email: nil, 
                         password: user.password
@@ -31,7 +31,7 @@ RSpec.describe "Authentications", type: :request do
             end 
 
             it 'returns error when password is incorrect' do 
-                post '/login', params: {
+                post '/api/v1/login', params: {
                     user: {
                         email: user.email, 
                         password: nil
@@ -48,7 +48,7 @@ RSpec.describe "Authentications", type: :request do
                 init_headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
                 auth_headers = Devise::JWT::TestHelpers.auth_headers(init_headers, user)
 
-                delete '/logout', headers: auth_headers
+                delete '/api/v1/logout', headers: auth_headers
             }
  
             it 'returns 200, no content' do

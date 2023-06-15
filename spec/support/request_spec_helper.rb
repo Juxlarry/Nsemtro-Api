@@ -4,7 +4,7 @@ module RequestSpecHelper
     end 
 
     def login(user) 
-        post '/login', params: {
+        post '/api/v1/login', params: {
             user: {
                 email: user.email, 
                 password: user.password

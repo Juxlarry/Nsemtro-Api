@@ -6,7 +6,7 @@ RSpec.describe "Users", type: :request do
 
     describe "POST /signup" do
         context 'when the params are valid' do
-            before {post '/signup', params: {
+            before {post '/api/v1/signup', params: {
                 user: { 
                     name: user.name, 
                     username: user.username, 
@@ -27,7 +27,7 @@ RSpec.describe "Users", type: :request do
 
         context 'When an email already exists' do
             before do
-              post '/signup', params: {
+              post '/api/v1/signup', params: {
                 user: {
                     email: existing_user.email,
                     name: existing_user.name, 
