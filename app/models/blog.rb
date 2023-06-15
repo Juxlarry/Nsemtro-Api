@@ -1,6 +1,7 @@
 class Blog < ApplicationRecord
   # before_save :add_author
   belongs_to :category
+  belongs_to :user
 
   has_many_attached :blog_images
 

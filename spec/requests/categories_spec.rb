@@ -3,24 +3,41 @@ require 'rails_helper'
 RSpec.describe "Categories", type: :request do
   let!(:categories) {create_list(:category, 5) }
   let!(:category_id) { categories.first.id }
-  
+  let(:user) { FactoryBot.create(:user) }
 
   #Test Get all Categories 
   describe "GET /categories" do
-    before {get '/api/v1/categories'}
-      it 'returns status code 200' do 
-        expect(response).to have_http_status(200)
-      end
-      
-      it 'returns categories' do 
-        expect(json).to_not be_empty
-        expect(json.size).to eq(5)
-      end 
+    
+    before {
+      login(user)
+
+      init_headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
+      auth_headers = Devise::JWT::TestHelpers.auth_headers(init_headers, user)
+
+      get '/api/v1/categories', headers: auth_headers
+    }
+
+    it 'returns status code 200' do 
+      expect(response).to have_http_status(200)
+    end
+    
+    it 'returns categories' do 
+      expect(json).to_not be_empty
+      expect(json.size).to eq(5)
+    end 
   end
+
 
   #Test Get a Category 
   describe "GET /categories/:id" do
-    before {get "/api/v1/categories/#{category_id}"}
+    before {
+      login(user)
+
+      init_headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
+      auth_headers = Devise::JWT::TestHelpers.auth_headers(init_headers, user)
+
+      get "/api/v1/categories/#{category_id}", headers: auth_headers
+    }
     
     context "when the category exists" do 
       it 'returns status code 200' do 
@@ -34,12 +51,20 @@ RSpec.describe "Categories", type: :request do
     end
   end
 
+
   #Test CREATE a Category
   describe "POST /category" do
-    let(:category_name) { { name: 'Sports' } }
+    let(:category_name) { { name: 'Sports' }.to_json }
 
     context 'when the request is valid' do 
-      before {post '/api/v1/categories', params: category_name}
+      before {
+        login(user)
+  
+        init_headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
+        auth_headers = Devise::JWT::TestHelpers.auth_headers(init_headers, user)
+  
+        post '/api/v1/categories', params: category_name, headers: auth_headers
+      }
 
       it 'creates a category' do 
         expect(json['name']).to eq('Sports')
@@ -51,7 +76,14 @@ RSpec.describe "Categories", type: :request do
     end 
 
     context 'when the request is invalid' do 
-      before {post '/api/v1/categories', params: {name: ''}}
+      before {
+        login(user)
+  
+        init_headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
+        auth_headers = Devise::JWT::TestHelpers.auth_headers(init_headers, user)
+  
+        post '/api/v1/categories', params: {}, headers: auth_headers
+      }
 
       it 'returns status code 422' do 
         expect(response).to have_http_status(422)
@@ -62,14 +94,21 @@ RSpec.describe "Categories", type: :request do
       end 
     end 
   end 
+  
 
   #Test DELETE Category
   describe 'DELETE /categories/:id' do 
-    before {delete "/api/v1/categories/#{category_id}"}
+    before {
+      login(user)
+
+      init_headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
+      auth_headers = Devise::JWT::TestHelpers.auth_headers(init_headers, user)
+
+      delete "/api/v1/categories/#{category_id}", headers: auth_headers
+    }
 
     it 'returns status code 204' do 
       expect(response).to have_http_status(204)
     end 
   end 
-
 end

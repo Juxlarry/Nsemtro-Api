@@ -4,5 +4,6 @@ FactoryBot.define do
         content {Faker::Lorem.paragraph}
         author {Faker::Book.author}
         category {create(:category) }
+        user {create(:user) }
     end 
 end 

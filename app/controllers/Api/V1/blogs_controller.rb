@@ -34,9 +34,8 @@ class Api::V1::BlogsController < ApplicationController
 
     #PUT /blog/:id
     def update 
-        logger.info "blog before update - #{@blog.inspect}"
+
         if @blog.update(blog_params)
-            logger.info "blog after update - #{@blog.inspect}"
             head :no_content
         else  
             render json: @blog.errors, status: :unprocessable_entity
